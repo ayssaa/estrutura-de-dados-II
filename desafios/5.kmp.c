@@ -29,43 +29,23 @@ void main() {
 
     // agora que temos nosso vetor aux formado, vamos de fato usar o algoritmo KMP
     int achou = 0;
-    int indice = -1;
-    int comparacoes = 0;
     j = -1;
     for (int i = 0; i < n; i++) {
         while (j > -1 && padrao[j + 1] != texto[i]) {
-            comparacoes += 1;
             j = aux[j];
         }
-        
-        comparacoes += 1;
         
         if (padrao[j + 1] == texto[i]) {
             j++;
         }
 
         if (j == m-1) {
-            indice = i - m + 1;
-            printf("Encontrado no índice %d!\n", indice); // índice da ocorrência
+            printf("Encontrado no índice %d!\n", i - m + 1); // índice da ocorrência
             achou = 1;
         }
     }
 
-    FILE *resultados = fopen("resultados.txt", "w");
-    if (resultados == NULL) {
-        printf("Erro ao criar arquivo!\n");
-    }
-
     if(achou == 0) {
-        fprintf(resultados, "Não encontrei o padrão!\n");
+        printf("Não encontrei o padrão :(");
     }
-    
-    else {
-        fprintf(resultados, "indice = %d\ncomparacoes = %d\n", indice, comparacoes);
-    }
-
-    fclose(resultados);
-
-    printf("Resultado está salvo em 'resultados.txt'!\n");
-    printf("Tivemos um total de %d comparações!\n", comparacoes);
 }

@@ -173,5 +173,4 @@ void main() {
     deletar(&raiz, "UFES");
     deletar(&raiz, "Apaixonada");
     imprimir(raiz);
-
 }

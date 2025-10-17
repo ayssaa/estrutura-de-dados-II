@@ -1,3 +1,13 @@
+
+/*
+Oii professor! Fiz a implementação acompanhando os vídeos aula abaixo:
+
+. https://www.youtube.com/watch?v=NqEbV5FBKmg
+. https://www.youtube.com/watch?v=NDfAYZCHstI
+
+Então ficou bem parecido, pois assisti e implementei com a mesma lógica!
+*/
+
 // Incluindo bibliotecas
 # include <stdio.h>
 # include <stdlib.h>
@@ -5,83 +15,163 @@
 # include <string.h>
 # define NUM_CHARS 256
 
-typedef struct TrieNode {
-    struct TrieNode *children[NUM_CHARS];
-    bool terminal; // é ou não o fim da string
-} trieNode;
+typedef struct NoTrie {
+    struct NoTrie *prox[NUM_CHARS];
+    bool fim; // é ou não o fim da string
+} notrie;
 
-trieNode *createnode() {
-    trieNode *newnode = malloc(sizeof(*newnode));
+notrie *criarNo() {
+    notrie *novono = malloc(sizeof(*novono));
 
     for(int i=0; i< NUM_CHARS; i++) {
-        newnode->children[i] = NULL;
+        novono->prox[i] = NULL;
     }
 
-    newnode->terminal = false;
-    return newnode;
+    novono->fim = false;
+    return novono;
 }
 
-bool trieinsert(trieNode **root, char *signedtext) {
-    if(*root == NULL) {
-        *root = createnode();
+bool inserirtrie(notrie **raiz, char *signedtext) {
+    if(*raiz == NULL) {
+        *raiz = criarNo();
     }
     
     unsigned char *text = (unsigned char *)signedtext; // resolvendo problema de índice negativo
-    trieNode *tmp = *root;
+    notrie *tmp = *raiz;
     int lenght = strlen(signedtext);
 
     for(int i=0; i< lenght; i++) {
-        if(tmp->children[text[i]] == NULL) {
+        if(tmp->prox[text[i]] == NULL) {
             // cria um novo nó
-            tmp->children[text[i]] = createnode();
+            tmp->prox[text[i]] = criarNo();
         }
-        tmp = tmp->children[text[i]];
+        tmp = tmp->prox[text[i]];
     }
 
-    if(tmp->terminal) {
+    if(tmp->fim) {
         return false;
     } else {
-        tmp->terminal = true;
+        tmp->fim = true;
         return true;
     }
 }
 
-void printtrie_rec(trieNode *node, unsigned char *prefix, int lenght) {
+void imprimirRec(notrie *no, unsigned char *prefix, int lenght) {
     unsigned char newprefix[lenght+2];
     memcpy(newprefix, prefix, lenght);
     newprefix[lenght+1] = 0;
     
-    if(node->terminal) {
-        printf("Word: %s\n", prefix);
+    if(no->fim) {
+        printf("Palavra: %s\n", prefix);
     }
 
     for(int i=0; i< NUM_CHARS; i++) {
-        if(node->children[i] != NULL) {
+        if(no->prox[i] != NULL) {
             newprefix[lenght] = i;
-            printtrie_rec(node->children[i], newprefix, lenght+1);
+            imprimirRec(no->prox[i], newprefix, lenght+1);
         }
     }
 }
 
-void printtrie(trieNode * root) {
-    if(root == NULL) {
-        printf("Trie empty!\n");
+void imprimir(notrie *raiz) {
+    if(raiz == NULL) {
+        printf("Vazia!\n");
         return;
     }
-    printtrie_rec(root, NULL, 0);
+    imprimirRec(raiz, NULL, 0);
+}
+
+bool busca(notrie *raiz, char *signedtext) {
+    unsigned char *text = (unsigned char *) signedtext;
+    int length = strlen(signedtext);
+    notrie * tmp = raiz;
+    for(int i=0; i< length; i++) {
+        if(tmp->prox[text[i]] == NULL) {
+            return false;
+        }
+        tmp = tmp->prox[text[i]];
+    }
+    return tmp->fim;
 }
 
 
+bool tem_filho(notrie *no) {
+    if(no == NULL) {
+        return false;
+    }
+    for (int i = 0; i < NUM_CHARS; i++) {
+        if(no->prox[i] != NULL) {
+            // tem filho
+            return true;
+        }
+    }
+    return false;
+}
+
+
+notrie* deletarRec(notrie *no, unsigned char *text, bool *deleted) {
+    if(no == NULL) {
+        return no;
+    }
+    
+    if(*text == '\0') {
+        if(no->fim) {
+            no->fim = false;
+            *deleted = true;
+
+            if(tem_filho(no) == false) {
+                free(no);
+                no = NULL;
+            }
+        }
+        return no;
+    }
+
+    no->prox[text[0]] = deletarRec(no->prox[text[0]], text+1, deleted);
+    if(*deleted && tem_filho(no) == false && no->fim == false) {
+        free(no);
+        no = NULL;
+    }
+    return no;
+}
+
+bool deletar(notrie** raiz, char *signedtext) {
+    unsigned char *text = (unsigned char *) signedtext;
+    bool resultado = false;
+
+    if(*raiz == NULL) {
+        return false;
+    }
+
+    *raiz = deletarRec(*raiz, text, &resultado);
+    return resultado;
+}
 
 
 void main() {
-    trieNode * root = NULL;
+    notrie *raiz = NULL;
 
-    trieinsert(&root, "Kit");
-    trieinsert(&root, "Cattle");
-    trieinsert(&root, "Kin");
-    trieinsert(&root, "Cat");
-    trieinsert(&root, "Happy");
+    // Inserindo na árvore
+    inserirtrie(&raiz, "Ayssa");
+    inserirtrie(&raiz, "Samuel");
+    inserirtrie(&raiz, "Amor");
+    inserirtrie(&raiz, "Apaixonada");
+    inserirtrie(&raiz, "UFES");
+    
+    // Vendo árvore
+    printf("------Palavras armazenadas------\n");
+    imprimir(raiz);
 
-    printtrie(root);
+    // Buscando
+    printf("------Buscando palavras------\n");
+    printf("search for Ayssa: %d\n", busca(raiz, "Ayssa"));
+    printf("search for Samuel: %d\n", busca(raiz, "Samuel"));
+    printf("search for UFES: %d\n", busca(raiz, "UFES"));
+
+    // Removendo
+    printf("-> Removendo palavras...\nPalavras removidas com sucesso! Veja as palavras armazenadas atuais:\n");
+    deletar(&raiz, "UFES");
+    deletar(&raiz, "Apaixonada");
+    imprimir(raiz);
+
 }

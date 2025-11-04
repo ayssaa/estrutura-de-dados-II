@@ -9,7 +9,7 @@ void main() {
     int aux;
 
     // Exibe vetor desordenado
-    printf("Vetor ordenado: ");
+    printf("Vetor desordenado: ");
     for (int i = 0; i < n; i++) {
         printf("%d ", vet[i]);
     }

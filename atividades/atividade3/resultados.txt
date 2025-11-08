@@ -1,0 +1,2 @@
+indice = 14
+comparacoes = 25

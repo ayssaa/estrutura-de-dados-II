@@ -4,7 +4,7 @@
 # include <string.h>
 
 void main() {
-    char texto[100] = "EugostodecursarcomputacaooporqueemuitodivertidoEugostodoSamuelEusouaAyssa";
+    char texto[100] = "ABCDABDABDABCDABCDABC";
     char padrao[100];
     int indice;
 

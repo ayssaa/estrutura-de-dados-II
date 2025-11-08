@@ -1,40 +1,34 @@
-# include <stdlib.h>
-# include <stdio.h>
+#include <stdlib.h>
+#include <stdio.h>
 
-void main() {
-    // Implementando Inserção direta
+int main() {
     int vet[3] = {2, 3, 1};
     int n = 3;
     int aux;
     
-    // Exibe vetor desordenado
-    printf("Vetor ordenado: ");
+    printf("Vetor desordenado: ");
     for (int i = 0; i < n; i++) {
         printf("%d ", vet[i]);
     }
-
     printf("\n");
     
-    for(int i = 1; i < (n-1); i++) {
+    for (int i = 1; i < n; i++) {
         aux = vet[i];
-        int j = (i-1);
+        int j = i - 1;
         
-        while(j >= 0 && aux < vet[j]) {
+        while (j >= 0 && aux < vet[j]) {
             vet[j+1] = vet[j];
-            j = j-1;
+            j--;
         }
         
-        if(j != (i-1)) {
-            vet[j+1] = aux;
-        }
+        vet[j+1] = aux;
     } 
     
-    // Exibe vetor ordenado
     printf("Vetor ordenado: ");
     for (int i = 0; i < n; i++) {
         printf("%d ", vet[i]);
     }
-
     printf("\n");
     
+    return 0;
 }

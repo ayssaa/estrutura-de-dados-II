@@ -4,7 +4,7 @@
 # include <string.h>
 
 void main() {
-    char texto[100] = "abcbcbabacbcaacbabacaba";
+    char texto[100] = "ABCDABDABDABCDABCDABC";
     char padrao[50];
 
     printf("Digite o padrão que você deseja buscar: ");
